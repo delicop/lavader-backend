@@ -1,0 +1,51 @@
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  ManyToOne,
+  JoinColumn,
+  Unique,
+} from 'typeorm';
+import { Cliente } from '../../clientes/entities/cliente.entity';
+
+export enum TipoVehiculo {
+  AUTO = 'auto',
+  MOTO = 'moto',
+  CAMIONETA = 'camioneta',
+}
+
+@Entity('vehiculos')
+@Unique(['placa', 'tenantId'])
+export class Vehiculo {
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
+
+  @ManyToOne(() => Cliente, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'clienteId' })
+  cliente!: Cliente;
+
+  @Column()
+  clienteId!: string;
+
+  @Column({ length: 10 })
+  placa!: string;
+
+  @Column({ length: 50 })
+  marca!: string;
+
+  @Column({ length: 50 })
+  modelo!: string;
+
+  @Column({ length: 30 })
+  color!: string;
+
+  @Column({ type: 'enum', enum: TipoVehiculo, default: TipoVehiculo.AUTO })
+  tipo!: TipoVehiculo;
+
+  @Column({ type: 'varchar', nullable: true })
+  tenantId!: string | null;
+
+  @CreateDateColumn()
+  fechaRegistro!: Date;
+}
